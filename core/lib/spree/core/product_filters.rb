@@ -97,7 +97,7 @@ module Spree
       #   the (uniquely named) field "p_brand.value". There's also a test for brand info
       #   being blank: note that this relies on with_property doing a left outer join
       #   rather than an inner join.
-      if Spree::Property.table_exists?
+      if Spree::Property.connected? && Spree::Property.table_exists?
         Spree::Product.add_search_scope :brand_any do |*opts|
           conds = opts.map {|o| ProductFilters.brand_filter[:conds][o]}.reject { |c| c.nil? }
           scope = conds.shift
@@ -140,7 +140,7 @@ module Spree
       #
       #   The brand-finding code can be simplified if a few more named scopes were added to
       #   the product properties model.
-      if Spree::Property.table_exists?
+      if Spree::Property.connected? && Spree::Property.table_exists?
         Spree::Product.add_search_scope :selective_brand_any do |*opts|
           Spree::Product.brand_any(*opts)
         end

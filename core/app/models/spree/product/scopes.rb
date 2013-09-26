@@ -23,7 +23,7 @@ module Spree
         # We should not define price scopes here, as they require something slightly different
         next if name.to_s.include?("master_price")
         parts = name.to_s.match(/(.*)_by_(.*)/)
-        order_text = "#{Product.quoted_table_name}.#{parts[2]} #{parts[1] == 'ascend' ?  "ASC" : "DESC"}"
+        order_text = Product.connected? ? ("#{Product.quoted_table_name}.#{parts[2]} #{parts[1] == 'ascend' ?  "ASC" : "DESC"}") : 'NA'
         self.scope(name.to_s, -> { relation.order(order_text) })
       end
     end
@@ -213,7 +213,7 @@ module Spree
     def self.group_by_products_id
       if (ActiveRecord::Base.connection.adapter_name == 'PostgreSQL')
         # Need to check, otherwise `column_names` will fail
-        if table_exists?
+        if self.connected? && table_exists?
           group(column_names.map { |col_name| "#{table_name}.#{col_name}"})
         end
       else

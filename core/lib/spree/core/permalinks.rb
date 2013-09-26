@@ -15,7 +15,7 @@ module Spree
           self.permalink_options = options
 
           if self.connected?
-            if self.table_exists? && self.column_names.include?(permalink_options[:field].to_s)
+            if self.connected? && self.table_exists? && self.column_names.include?(permalink_options[:field].to_s)
               before_validation(:on => :create) { save_permalink }
             end
           end
